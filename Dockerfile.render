@@ -1,0 +1,46 @@
+# ─── Stage 1: Dependencies ───────────────────────────────────────────────────
+FROM node:24-alpine AS deps
+
+WORKDIR /app
+
+COPY package*.json ./
+# ci install is faster and uses lockfile exactly
+RUN npm ci --omit=dev
+
+# ─── Stage 2: Build ───────────────────────────────────────────────────────────
+FROM node:24-alpine AS builder
+
+WORKDIR /app
+
+# Install ALL deps (including devDependencies) for build
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+
+# Build the NestJS app
+RUN npm run build
+
+# ─── Stage 3: Production image ────────────────────────────────────────────────
+FROM node:24-alpine AS production
+
+# Non-root user for security
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
+
+WORKDIR /app
+
+# Copy only what is needed at runtime
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/src/mail/mail-templates ./src/mail/mail-templates
+COPY --from=builder /app/src/i18n ./src/i18n
+
+# Render injects env vars at runtime — no .env file needed or copied
+# DATABASE_URL points to MongoDB Atlas (external), no postgres to wait for
+
+USER appuser
+
+EXPOSE 3000
+
+# Directly start the compiled app — no wait-for-it, no seeds
+CMD ["node", "dist/main"]
