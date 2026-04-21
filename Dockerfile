@@ -37,7 +37,13 @@ COPY --from=builder /app/dist                    ./dist
 COPY --from=builder /app/src/mail/mail-templates ./src/mail/mail-templates
 COPY --from=builder /app/src/i18n               ./src/i18n
 
-# Env vars injected at runtime by Render — DATABASE_URL points to MongoDB Atlas
+# Multer DiskStorage calls mkdirSync('./files') on startup.
+# Pre-create the directory and grant ownership to appuser so the non-root
+# user can write to it. Without this, the app crashes with EACCES on Render.
+# NOTE: on Render free tier this directory is ephemeral (wiped on redeploy).
+# For production file persistence use FILE_DRIVER=s3 in env vars instead.
+RUN mkdir -p /app/files && chown -R appuser:appgroup /app/files
+
 USER appuser
 
 EXPOSE 3000
