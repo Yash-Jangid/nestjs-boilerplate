@@ -12,7 +12,7 @@ DATABASE_PORT=27017
 DATABASE_USERNAME=root
 DATABASE_PASSWORD=secret
 DATABASE_NAME=api
-DATABASE_URL=mongodb://mongo:27017
+DATABASE_URL=mongodb+srv://<user>:<password>@cluster0.lhq0f.mongodb.net/?appName=Cluster0
 
 # Support "local", "s3", "s3-presigned"
 FILE_DRIVER=local
@@ -50,3 +50,8 @@ GOOGLE_CLIENT_SECRET=
 APPLE_APP_AUDIENCE=[]
 
 WORKER_HOST=redis://redis:6379/1
+
+# ─── Jobs Deduplication Service ───────────────────────────────────────────────
+# Required: API key for POST /api/v1/jobs/dedupe
+# Generate with: openssl rand -hex 32
+JOBS_API_KEY=CHANGE_ME_USE_STRONG_RANDOM_KEY

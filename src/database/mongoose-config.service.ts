@@ -12,11 +12,11 @@ export class MongooseConfigService implements MongooseOptionsFactory {
   constructor(private readonly configService: ConfigService<AllConfigType>) {}
 
   createMongooseOptions(): MongooseModuleOptions {
+    const uri = this.configService.get('database.url', { infer: true });
+
     return {
-      uri: this.configService.get('database.url', { infer: true }),
+      uri,
       dbName: this.configService.get('database.name', { infer: true }),
-      user: this.configService.get('database.username', { infer: true }),
-      pass: this.configService.get('database.password', { infer: true }),
       connectionFactory(connection) {
         connection.plugin(mongooseAutoPopulate);
         return connection;
