@@ -5,7 +5,7 @@ export type LinkedinJobSchemaDocument =
   HydratedDocument<LinkedinJobSchemaClass>;
 
 @Schema({
-  collection: 'linkedin_jobs',
+  collection: 'Linkedin_Public_search_urls',
   timestamps: { createdAt: true, updatedAt: false },
   toJSON: { virtuals: true, getters: true },
 })
