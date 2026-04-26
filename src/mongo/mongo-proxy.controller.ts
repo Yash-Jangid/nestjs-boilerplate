@@ -30,6 +30,7 @@ import {
 } from './dto/mongo-response.dto';
 import { MongoUpdateManyDto } from './dto/mongo-update-many.dto';
 import { MongoUpdateOneDto } from './dto/mongo-update-one.dto';
+import { N8nOriginGuard } from './guards/n8n-origin.guard';
 import { MongoProxyService } from './mongo-proxy.service';
 
 @ApiTags('Mongo Proxy')
@@ -37,7 +38,7 @@ import { MongoProxyService } from './mongo-proxy.service';
 @ApiUnauthorizedResponse({
   description: 'Missing or invalid x-api-key header.',
 })
-@UseGuards(ApiKeyGuard)
+@UseGuards(ApiKeyGuard, N8nOriginGuard)
 @Controller({ path: 'mongo', version: '1' })
 export class MongoProxyController {
   constructor(private readonly mongoProxyService: MongoProxyService) {}

@@ -55,6 +55,10 @@ class EnvironmentVariablesValidator {
   @IsString()
   @IsOptional()
   MONGO_ALLOWED_COLLECTIONS: string;
+
+  @IsString()
+  @IsOptional()
+  MONGO_ALLOWED_ORIGINS: string;
 }
 
 export default registerAs<AppConfig>('app', () => {
@@ -78,5 +82,7 @@ export default registerAs<AppConfig>('app', () => {
     mongoAllowedCollections: process.env.MONGO_ALLOWED_COLLECTIONS
       ? process.env.MONGO_ALLOWED_COLLECTIONS.split(',').map((c) => c.trim())
       : [],
+    mongoAllowedOrigins:
+      process.env.MONGO_ALLOWED_ORIGINS || 'n8n.zynithic.com,*.zynithic.com',
   };
 });
