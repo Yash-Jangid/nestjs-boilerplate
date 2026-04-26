@@ -51,6 +51,10 @@ class EnvironmentVariablesValidator {
   @IsString()
   @IsOptional()
   JOBS_API_KEY: string;
+
+  @IsString()
+  @IsOptional()
+  MONGO_ALLOWED_COLLECTIONS: string;
 }
 
 export default registerAs<AppConfig>('app', () => {
@@ -71,5 +75,8 @@ export default registerAs<AppConfig>('app', () => {
     fallbackLanguage: process.env.APP_FALLBACK_LANGUAGE || 'en',
     headerLanguage: process.env.APP_HEADER_LANGUAGE || 'x-custom-lang',
     jobsApiKey: process.env.JOBS_API_KEY,
+    mongoAllowedCollections: process.env.MONGO_ALLOWED_COLLECTIONS
+      ? process.env.MONGO_ALLOWED_COLLECTIONS.split(',').map((c) => c.trim())
+      : [],
   };
 });
